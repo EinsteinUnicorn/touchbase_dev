@@ -58,19 +58,19 @@ int LED_PIN = 1;
 
 void setup() {
   TinyWire.begin(PROGRAM_BLOCK_ADDRESS); // Join the I2C bus as a slave
-  TinyWire.onRequest(sendADCValue);      // Register the request handler
-  pinMode(ADC_PIN, INPUT);           // Configure ADC pin as input
+  //TinyWire.onRequest(sendADCValue);      // Register the request handler
+  //pinMode(ADC_PIN, INPUT);           // Configure ADC pin as input
 }
 
 void loop() {
   digitalWrite(LED_PIN, HIGH);
 }
 
-void sendADCValue() {
-  int adcValue = analogRead(ADC_PIN); // Read ADC value
-  TinyWire.write(adcValue >> 8);          // Send high byte
-  TinyWire.write(adcValue & 0xFF);        // Send low byte
-}
+//void sendADCValue() {
+//  int adcValue = analogRead(ADC_PIN); // Read ADC value
+//  TinyWire.write(adcValue >> 8);          // Send high byte
+//  TinyWire.write(adcValue & 0xFF);        // Send low byte
+//}
 
 
 
