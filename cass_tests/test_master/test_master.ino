@@ -136,9 +136,11 @@ void requestBlockData(uint8_t blockAddress) {
 
 #include <Wire.h>
 
-#define PROGRAM_BLOCK_ADDRESS 0x08 // I2C address of the program block
 
 String blockType = "";
+uint8_t TARGET_BLOCK =  0x7C; // I2C address of the program block
+int addresses [127];
+int i = 0;
 
 void setup() {
   Wire.begin(); // Initialize as master
@@ -146,30 +148,55 @@ void setup() {
   delay(1000); // Allow time for initialization
   Serial.println("Brain block initialized.");
   pinMode(LED_BUILTIN, OUTPUT);
+  memset(addresses,0,sizeof(addresses));
+  addresses[0] = (int)TARGET_BLOCK;
 }
 
+
 void loop() {
+  
   // Request data from the program block
   //Serial.println("check2");
-  Wire.requestFrom(PROGRAM_BLOCK_ADDRESS, 2); // Request 2 bytes (16-bit ADC value)
+  Wire.requestFrom((int)TARGET_BLOCK, 1); // Request 2 bytes (16-bit ADC value)
   //Serial.println("check");
+  delay(100);
+  if (Wire.available() >= 1) { // Wait until we receive 2 bytes
 
-  if (Wire.available() >= 2) { // Wait until we receive 2 bytes
-    int adcValue = Wire.read() << 8; // Read high byte
-    adcValue |= Wire.read();
-    Serial.print(adcValue);
+    i++;
+    Serial.println("target address:");
+    Serial.println(TARGET_BLOCK);
+
+    uint8_t nextAddress = Wire.read();
+
+    Serial.println("Next address:");
+    Serial.println(nextAddress);
+
+    addresses[i] = (int)nextAddress;
+    while(nextAddress != 0){
+      TARGET_BLOCK = nextAddress;
+    }
     
-    if (adcValue >= 1020) {
-      blockType = "if";
-    }
-    else if (adcValue < 1020 && adcValue >= 1000) {
-      blockType = "pressed";
-    }
-    else if (adcValue < 1000) {
-      blockType = "button";
-    }        
-    Serial.print("Block: ");
-    Serial.println(blockType);       // Print the ADC value
+    // int currAdcValue = Wire.read() << 8; // Read high byte
+    // currAdcValue |= Wire.read();
+    // Serial.print("Current block value: ");
+    // Serial.println(currAdcValue);
+
+    // int nextAdcValue = Wire.read() << 8; // Read high byte
+    // nextAdcValue |= Wire.read();
+    // Serial.print("Next block value: ");
+    // Serial.println(nextAdcValue);
+    
+    // if (adcValue >= 1020) {
+    //   blockType = "if";
+    // }
+    // else if (adcValue < 1020 && adcValue >= 1000) {
+    //   blockType = "pressed";
+    // }
+    // else if (adcValue < 1000) {
+    //   blockType = "button";
+    // }        
+    // Serial.print("Block: ");
+    // Serial.println(blockType);       // Print the ADC value
   } else {
     blockType = "missing";
     Serial.println("No response from program block.");
