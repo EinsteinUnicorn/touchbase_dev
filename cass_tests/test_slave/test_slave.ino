@@ -52,7 +52,7 @@ void sendData() {
 #include <TinyWire.h>
 
 #define ADC_PIN_CURR 3          // Pin used for the current block's ADC
-#define ADC_PIN_NEXT 4         // Pin for the next block's ADC
+#define ADC_PIN_NEXT 2         // Pin for the next block's ADC
 //#define PROGRAM_BLOCK_ADDRESS 0x08 // I2C address of this block
 
 int currAdcValue = 0;
