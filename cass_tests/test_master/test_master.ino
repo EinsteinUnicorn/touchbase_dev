@@ -16,7 +16,7 @@ void setup() {
   addresses[0] = (int)TARGET_BLOCK;
 }
 
-//int missedI2Crequest = 0;
+int missedI2Crequest = 0;
 void loop() {
   Wire.requestFrom((int)TARGET_BLOCK, 1, true);
   delay(150); 
@@ -33,9 +33,16 @@ void loop() {
     Serial.println(nextAddress);
 
     addresses[i] = (int)nextAddress;
+    missedI2Crequest = 0;
   } else {
-    //missedI2Crequest++;
-    Serial.println("Nothing else connected");
+    missedI2Crequest++;
+    Serial.println(missedI2Crequest);
+    //Serial.println("Nothing else connected");
+  }
+
+  if(missedI2Crequest == 10){
+    String compiledProgram = createProgram();
+    Serial.print(compiledProgram);
   }
 
   /*
@@ -62,18 +69,18 @@ void loop() {
 }
 
 String createProgram() {
-  Serial.println("In create program");
+  //Serial.println("In create program");
   String program = "";
   for(int j = 0; j < i; j++){
     switch((int)addresses[j]){
       case 86:
-         program += "start/n";
+         program += "start \n";
          break;
       case 124:
-         program += "middle /n";
+         program += "middle \n";
          break;
       case 105:
-        program += "end/n";
+        program += "end \n";
         break;
       default:
         break;
