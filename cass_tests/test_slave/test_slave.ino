@@ -1,3 +1,4 @@
+
 /*
 #include <TinyWire.h>
 
@@ -48,12 +49,12 @@ void sendData() {
 ////USE THIS ONE FOR JUST ONE BLOCK DETECTION
 
 
+#include <TinyWireS.h>
+//#include <Wire.h>
 
-#include <TinyWire.h>
 
 #define ADC_PIN_CURR 3          // Pin used for the current block's ADC
 #define ADC_PIN_NEXT 2         // Pin for the next block's ADC
-//#define PROGRAM_BLOCK_ADDRESS 0x08 // I2C address of this block
 
 int currAdcValue = 0;
 
@@ -67,8 +68,8 @@ void setup() {
 
   uint8_t currAddress = map(currAdcValue, 0, 1023, 0, 127);
 
-  TinyWire.begin(currAddress); // Join the I2C bus as a slave
-  TinyWire.onRequest(sendADCValue);      // Register the request handler
+  TinyWireS.begin(currAddress); // Join the I2C bus as a slave
+  TinyWireS.onRequest(sendADCValue);      // Register the request handler
 }
 
 void loop() {
@@ -78,7 +79,7 @@ void loop() {
 void sendADCValue() {
   int nextAdcValue = analogRead(ADC_PIN_NEXT);   // Read ADC value
   uint8_t nextAddress = map(nextAdcValue, 0, 1023, 0, 127);
-  TinyWire.write(nextAddress);
+  TinyWireS.write(nextAddress);
 
 }
 
